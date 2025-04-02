@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace LIVRABLE_2_PSI
 {
-    internal class Graphe
-    {
-        /// <summary>
-        /// Classe générique représentant un graphe orienté pondéré.
-        /// Contient une liste d’adjacence et une possibilité de générer une matrice d’adjacence.
-        /// </summary>
-        public class Graphes<T>
+        public class Graphe<T>
         {
+            /// <summary>
+            /// Classe générique représentant un graphe orienté pondéré.
+            /// Contient une liste d’adjacence et une possibilité de générer une matrice d’adjacence.
+            /// </summary>
             public List<Noeud<T>> Noeuds { get; private set; } = new();
 
             /// <summary>
@@ -124,5 +122,4 @@ namespace LIVRABLE_2_PSI
                 DFS(depart, visités);
             }
         }
-    }
 }

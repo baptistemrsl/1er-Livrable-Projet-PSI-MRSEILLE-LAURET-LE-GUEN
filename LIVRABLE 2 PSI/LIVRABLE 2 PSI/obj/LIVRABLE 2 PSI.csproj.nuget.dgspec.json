@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bapti\\OneDrive\\Bureau\\ESILV\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj": {}
+    "C:\\Users\\bapti\\OneDrive\\Bureau\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bapti\\OneDrive\\Bureau\\ESILV\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj": {
+    "C:\\Users\\bapti\\OneDrive\\Bureau\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bapti\\OneDrive\\Bureau\\ESILV\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj",
+        "projectUniqueName": "C:\\Users\\bapti\\OneDrive\\Bureau\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj",
         "projectName": "LIVRABLE 2 PSI",
-        "projectPath": "C:\\Users\\bapti\\OneDrive\\Bureau\\ESILV\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj",
+        "projectPath": "C:\\Users\\bapti\\OneDrive\\Bureau\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI.csproj",
         "packagesPath": "C:\\Users\\bapti\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bapti\\OneDrive\\Bureau\\ESILV\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\obj\\",
+        "outputPath": "C:\\Users\\bapti\\OneDrive\\Bureau\\LIVRABLE 2 PSI\\LIVRABLE 2 PSI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
