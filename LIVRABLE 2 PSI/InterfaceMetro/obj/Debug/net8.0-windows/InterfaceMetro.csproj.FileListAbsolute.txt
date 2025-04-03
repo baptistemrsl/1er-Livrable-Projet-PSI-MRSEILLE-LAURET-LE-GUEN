@@ -36,3 +36,5 @@ C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-wi
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\InterfaceMetro.genruntimeconfig.cache
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\ref\InterfaceMetro.dll
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\MetroParis.xlsx
+C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\fondMetro.png
+C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\ImageMetro.png

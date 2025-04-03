@@ -1,20 +1,13 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-using System;
-
-namespace InterfaceMetro
+﻿namespace InterfaceMetro
 {
     partial class Form1
     {
-        /// <summary>
-        /// Variable nécessaire au concepteur.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.ComboBox comboDepart;
+        private System.Windows.Forms.ComboBox comboArrivee;
+        private System.Windows.Forms.Button btnCalculer;
+        private System.Windows.Forms.PictureBox pictureBoxCarte;
 
-        /// <summary>
-        /// Nettoyage des ressources utilisées.
-        /// </summary>
-        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -24,57 +17,61 @@ namespace InterfaceMetro
             base.Dispose(disposing);
         }
 
-        #region Code généré par le Concepteur Windows Form
-
-        /// <summary>
-        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
-        /// le contenu de cette méthode avec l'éditeur de code.
-        /// </summary>
-        private ComboBox comboDepart;
-        private ComboBox comboArrivee;
-        private TextBox txtResultat;
-        private Button btnCalculer;
-
         private void InitializeComponent()
         {
+            this.comboDepart = new System.Windows.Forms.ComboBox();
+            this.comboArrivee = new System.Windows.Forms.ComboBox();
+            this.btnCalculer = new System.Windows.Forms.Button();
+            this.pictureBoxCarte = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCarte)).BeginInit();
             this.SuspendLayout();
+            // 
+            // comboDepart
+            // 
+            this.comboDepart.FormattingEnabled = true;
+            this.comboDepart.Location = new System.Drawing.Point(30, 30);
+            this.comboDepart.Name = "comboDepart";
+            this.comboDepart.Size = new System.Drawing.Size(200, 21);
+            this.comboDepart.TabIndex = 0;
+            // 
+            // comboArrivee
+            // 
+            this.comboArrivee.FormattingEnabled = true;
+            this.comboArrivee.Location = new System.Drawing.Point(30, 70);
+            this.comboArrivee.Name = "comboArrivee";
+            this.comboArrivee.Size = new System.Drawing.Size(200, 21);
+            this.comboArrivee.TabIndex = 1;
+            // 
+            // btnCalculer
+            // 
+            this.btnCalculer.Location = new System.Drawing.Point(30, 110);
+            this.btnCalculer.Name = "btnCalculer";
+            this.btnCalculer.Size = new System.Drawing.Size(200, 30);
+            this.btnCalculer.TabIndex = 2;
+            this.btnCalculer.Text = "Afficher le chemin";
+            this.btnCalculer.UseVisualStyleBackColor = true;
+            this.btnCalculer.Click += new System.EventHandler(this.btnCalculer_Click);
+            // 
+            // pictureBoxCarte
+            // 
+            this.pictureBoxCarte.Location = new System.Drawing.Point(250, 10);
+            this.pictureBoxCarte.Name = "pictureBoxCarte";
+            this.pictureBoxCarte.Size = new System.Drawing.Size(800, 800);
+            this.pictureBoxCarte.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxCarte.TabIndex = 3;
+            this.pictureBoxCarte.TabStop = false;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.ResumeLayout(false);
-
-            this.comboDepart = new ComboBox();
-            this.comboArrivee = new ComboBox();
-            this.txtResultat = new TextBox();
-            this.btnCalculer = new Button();
-
-            // Positionnement (tu peux adapter)
-            this.comboDepart.Location = new Point(20, 20);
-            this.comboArrivee.Location = new Point(20, 60);
-            this.txtResultat.Location = new Point(20, 100);
-            this.txtResultat.Multiline = true;
-            this.txtResultat.Size = new Size(400, 200);
-            this.btnCalculer.Location = new Point(20, 320);
-            this.btnCalculer.Text = "Calculer";
-
-            // Ajouter l’événement
-            this.btnCalculer.Click += new EventHandler(this.btnCalculer_Click);
-
-            // Ajout au formulaire
-            this.Controls.Add(this.comboDepart);
-            this.Controls.Add(this.comboArrivee);
-            this.Controls.Add(this.txtResultat);
+            this.ClientSize = new System.Drawing.Size(1080, 820);
+            this.Controls.Add(this.pictureBoxCarte);
             this.Controls.Add(this.btnCalculer);
-
+            this.Controls.Add(this.comboArrivee);
+            this.Controls.Add(this.comboDepart);
+            this.Name = "Form1";
+            this.Text = "Trajet Métro Paris";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCarte)).EndInit();
+            this.ResumeLayout(false);
         }
-
-        #endregion
     }
 }
-

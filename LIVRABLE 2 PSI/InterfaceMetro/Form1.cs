@@ -1,110 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LIVRABLE_2_PSI;
 
 namespace InterfaceMetro
 {
-
     public partial class Form1 : Form
     {
-        private LIVRABLE_2_PSI.MetroGraphBuilder builder;
-        private LIVRABLE_2_PSI.Graphe<LIVRABLE_2_PSI.Station> graphe;
-        private LIVRABLE_2_PSI.Chemins<LIVRABLE_2_PSI.Station> chemins;
+        private MetroGraphBuilder builder;
+        private Graphe<Station> graphe;
+        private Chemins<Station> chemins;
+        private Bitmap fond;
 
         public Form1()
         {
             InitializeComponent();
-            InitialiserGraphe();
-        }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            // Tu peux laisser vide ou initialiser des choses ici
+            InitialiserGrapheEtCarte();
         }
 
-
-        private void InitialiserGraphe()
+        private void InitialiserGrapheEtCarte()
         {
-            builder = new LIVRABLE_2_PSI.MetroGraphBuilder("MetroParis.xlsx");
+            builder = new MetroGraphBuilder("MetroParis.xlsx");
             graphe = builder.ConstruireGraphe();
-            chemins = new LIVRABLE_2_PSI.Chemins<LIVRABLE_2_PSI.Station>(graphe);
+            chemins = new Chemins<Station>(graphe);
             chemins.CalculerFloydWarshall();
 
             comboDepart.DisplayMember = "Valeur";
             comboArrivee.DisplayMember = "Valeur";
 
-            var items = builder.NoeudParId.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList();
-            comboDepart.Items.AddRange(items.ToArray());
-            comboArrivee.Items.AddRange(items.ToArray());
+            var items = builder.NoeudParId.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToArray();
+            comboDepart.Items.AddRange(items);
+            comboArrivee.Items.AddRange(items);
+
+            // Chargement de l'image de fond
+            if (System.IO.File.Exists("fondMetro.png"))
+            {
+                fond = new Bitmap("fondMetro.png");
+                pictureBoxCarte.Image = new Bitmap(fond);
+            }
+            else
+            {
+                MessageBox.Show("L’image fondMetro.png est manquante !");
+            }
         }
 
         private void btnCalculer_Click(object sender, EventArgs e)
         {
-            if (comboDepart.SelectedItem is not LIVRABLE_2_PSI.Noeud<LIVRABLE_2_PSI.Station> depart ||
-                comboArrivee.SelectedItem is not LIVRABLE_2_PSI.Noeud<LIVRABLE_2_PSI.Station> arrivee)
+            if (comboDepart.SelectedItem is not Noeud<Station> depart ||
+                comboArrivee.SelectedItem is not Noeud<Station> arrivee)
             {
-                MessageBox.Show("Veuillez sélectionner une station de départ et une d'arrivée.");
+                MessageBox.Show("Veuillez choisir une station de départ et une station d’arrivée.");
                 return;
             }
 
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"Départ : {depart.Valeur.Nom} (Ligne {depart.Valeur.Ligne})");
-            sb.AppendLine($"Arrivée : {arrivee.Valeur.Nom} (Ligne {arrivee.Valeur.Ligne})\n");
-
-            (string nom, double temps, long ms, System.Collections.Generic.List<LIVRABLE_2_PSI.Noeud<LIVRABLE_2_PSI.Station>> chemin) meilleur = ("", double.PositiveInfinity, 0, null);
-
-            var algos = new[] {
-                ("Dijkstra", new Func<(double, System.Collections.Generic.List<LIVRABLE_2_PSI.Noeud<LIVRABLE_2_PSI.Station>>)>(() => chemins.Dijkstra(depart, arrivee))),
-                ("Bellman-Ford", new Func<(double, System.Collections.Generic.List<LIVRABLE_2_PSI.Noeud<LIVRABLE_2_PSI.Station>>)>(() => chemins.BellmanFord(depart, arrivee))),
-                ("Floyd-Warshall", new Func<(double, System.Collections.Generic.List<LIVRABLE_2_PSI.Noeud<LIVRABLE_2_PSI.Station>>)>(() => chemins.FloydWarshall(depart, arrivee)))
-            };
-
-            foreach (var (nom, methode) in algos)
+            var (distance, chemin) = chemins.Dijkstra(depart, arrivee);
+            if (chemin == null || chemin.Count == 0)
             {
-                var sw = Stopwatch.StartNew();
-                var (temps, chemin) = methode();
-                sw.Stop();
-
-                sb.AppendLine($"[{nom}] → {temps} min en {sw.ElapsedMilliseconds} ms");
-
-                if (temps < meilleur.temps)
-                    meilleur = (nom, temps, sw.ElapsedMilliseconds, chemin);
+                MessageBox.Show("Aucun chemin trouvé entre les stations sélectionnées.");
+                return;
             }
 
-            sb.AppendLine("\n✔ Meilleur chemin trouvé par : " + meilleur.nom);
-            if (meilleur.chemin == null)
+            if (fond == null)
             {
-                sb.AppendLine("\n❌ Aucun chemin trouvé.");
-            }
-            else
-            {
-                sb.AppendLine("\n✔ Meilleur chemin trouvé par : " + meilleur.nom);
-                foreach (var noeud in meilleur.chemin)
-                {
-                    sb.AppendLine($"- {noeud.Valeur.Nom} (Ligne {noeud.Valeur.Ligne})");
-                }
-            }
-            foreach (var noeud in meilleur.chemin)
-            {
-                sb.AppendLine($"- {noeud.Valeur.Nom} (Ligne {noeud.Valeur.Ligne})");
+                MessageBox.Show("L’image de fond n’est pas chargée.");
+                return;
             }
 
-            txtResultat.Text = sb.ToString();
-        }
-    }
+            Bitmap bmp = new Bitmap(fond); // Copie du fond pour dessin
+            using Graphics g = Graphics.FromImage(bmp);
+            Pen ligneChemin = new Pen(Color.Blue, 2);
+            Brush pointChemin = Brushes.Red;
 
-    public static class NoeudExtensions
-    {
-        public static string Valeur(this LIVRABLE_2_PSI.Noeud<LIVRABLE_2_PSI.Station> n)
-        {
-            return $"{n.Valeur.Nom} (Ligne {n.Valeur.Ligne})";
+            for (int i = 0; i < chemin.Count - 1; i++)
+            {
+                Point p1 = MapProjection.Projection(chemin[i].Valeur);
+                Point p2 = MapProjection.Projection(chemin[i + 1].Valeur);
+                g.DrawLine(ligneChemin, p1, p2);
+            }
+
+            foreach (var station in chemin)
+            {
+                Point pt = MapProjection.Projection(station.Valeur);
+                g.FillEllipse(pointChemin, pt.X - 4, pt.Y - 4, 8, 8);
+            }
+
+            pictureBoxCarte.Image = bmp;
         }
     }
 }
+

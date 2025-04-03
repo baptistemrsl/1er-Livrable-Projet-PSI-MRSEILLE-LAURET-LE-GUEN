@@ -11,11 +11,11 @@ namespace LIVRABLE_2_PSI
     public class MetroGraphBuilder
     {
         private readonly string _fichierExcel;
-        private readonly Graphe<Station> _graphe = new();
-        private readonly Dictionary<int, Noeud<Station>> _noeudsParId = new();
-        public Dictionary<int, Noeud<Station>> NoeudParId => _noeudsParId;
+        private readonly Graphe<Station> graphe = new();
+        private readonly Dictionary<int, Noeud<Station>> noeudsParId = new();
+        public Dictionary<int, Noeud<Station>> NoeudParId => noeudsParId;
 
-        public MetroGraphBuilder(string fichierExcel)
+        public MetroGraphBuilder(string _fichierExcel)
         {
             _fichierExcel = "MetroParis.xlsx";
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -47,14 +47,15 @@ namespace LIVRABLE_2_PSI
                     Id = int.Parse(feuilleStations.Cells[i, 1].Text),
                     Nom = feuilleStations.Cells[i, 2].Text,
                     Ligne = feuilleStations.Cells[i, 3].Text,
-                    Longitude = double.Parse(feuilleStations.Cells[i, 4].Text, System.Globalization.CultureInfo.InvariantCulture),
-                    Latitude = double.Parse(feuilleStations.Cells[i, 5].Text, System.Globalization.CultureInfo.InvariantCulture),
+                    Longitude = double.Parse(feuilleStations.Cells[i, 4].Text.Replace(',', '.'), CultureInfo.InvariantCulture),
+                    Latitude = double.Parse(feuilleStations.Cells[i, 5].Text.Replace(',', '.'), CultureInfo.InvariantCulture),
+
                     Commune = feuilleStations.Cells[i, 6].Text
                 };
 
 
-                var noeud = _graphe.AjouterNoeud(station);
-                _noeudsParId[station.Id] = noeud;
+                var noeud = graphe.AjouterNoeud(station);
+                noeudsParId[station.Id] = noeud;
             }
 
             // Création des arêtes (liaisons directes entre stations)
@@ -74,18 +75,18 @@ namespace LIVRABLE_2_PSI
                 // Ajout des arcs
                 if (int.TryParse(precedent, out int idPrecedent))
                 {
-                    _graphe.AjouterArc(_noeudsParId[idPrecedent], _noeudsParId[idStation], temps);
+                    graphe.AjouterArc(noeudsParId[idPrecedent], noeudsParId[idStation], temps);
                 }
 
                 if (int.TryParse(suivant, out int idSuivant))
                 {
-                    _graphe.AjouterArc(_noeudsParId[idStation], _noeudsParId[idSuivant], temps);
+                    graphe.AjouterArc(noeudsParId[idStation], noeudsParId[idSuivant], temps);
                 }
 
             }
 
             // Création des correspondances (temps de changement entre stations de même nom)
-            var groupesParNom = _noeudsParId.Values
+            var groupesParNom = noeudsParId.Values
                 .GroupBy(n => n.Valeur.Nom)
                 .Where(g => g.Count() > 1);
 
@@ -96,13 +97,13 @@ namespace LIVRABLE_2_PSI
                 {
                     for (int j = i + 1; j < stations.Count; j++)
                     {
-                        _graphe.AjouterArc(stations[i], stations[j], 2); // correspondance bidirectionnelle par défaut 2 min
-                        _graphe.AjouterArc(stations[j], stations[i], 2);
+                        graphe.AjouterArc(stations[i], stations[j], 2); // correspondance bidirectionnelle par défaut 2 min
+                        graphe.AjouterArc(stations[j], stations[i], 2);
                     }
                 }
             }
 
-            return _graphe;
+            return graphe;
         }
     }
 }

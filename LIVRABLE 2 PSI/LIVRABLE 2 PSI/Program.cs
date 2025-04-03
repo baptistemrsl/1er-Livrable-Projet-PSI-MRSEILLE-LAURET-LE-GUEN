@@ -42,7 +42,7 @@ namespace LIVRABLE_2_PSI
             }
 
 
-            Console.WriteLine("\n==== CALCUL D'ITINÉRAIRE ====");
+            Console.WriteLine("\n CALCUL D'ITINÉRAIRE ");
 
             Console.Write("Entrez l'ID de la station de départ : ");
             int idDepart = int.Parse(Console.ReadLine()!);
