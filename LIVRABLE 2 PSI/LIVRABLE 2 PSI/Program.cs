@@ -1,113 +1,119 @@
-﻿using LIVRABLE_2_PSI;
-using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-
-
+using System.Linq;
 
 namespace LIVRABLE_2_PSI
 {
-    class Program1
+    class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            // Charger et construire le graphe du métro de Paris à partir du fichier Excel
-            var builder = new MetroGraphBuilder("MetroParis.xlsx");
-            var graphe = builder.ConstruireGraphe();
-
+            /// Construire le graphe à partir des fichiers CSV
+            var builder = new CsvGraphBuilder("noeuds.csv", "arcs.csv");
+            Graphe<Station> graphe = builder.ConstruireGraphe();
             Console.WriteLine($"Nombre total de stations : {graphe.Noeuds.Count}");
 
-            // Vérifier la connectivité du graphe
+            /// Vérifier si le graphe est connexe
             bool estConnexe = graphe.EstConnexe();
-            Console.WriteLine($"\nLe graphe est connexe ? {estConnexe}");
+            Console.WriteLine($"Le graphe est connexe ? {estConnexe}");
 
-            // Générer la matrice d’adjacence (utile pour Floyd-Warshall par exemple)
-            graphe.GenererMatriceAdjacence();
+            /// Préparation des algorithmes de chemin
+            var chemins = new Chemins<Station>(graphe);
+            /// Calcul préalable de Floyd-Warshall (pour ne pas le refaire à chaque requête)
+            chemins.CalculerFloydWarshall();
 
-            ///test algo tri
-
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-            var cheminAlgo = new Chemins<Station>(graphe);
-            cheminAlgo.CalculerFloydWarshall();
-
-            // 🔎 Affichage des 10 premières stations pour aide utilisateur
-            Console.WriteLine("\nVoici quelques stations disponibles :");
-            foreach (var pair in builder.NoeudParId.OrderBy(p => p.Key).Take(10))
+            /// Afficher quelques stations en exemple pour guider l'utilisateur
+            Console.WriteLine("\nExemples de stations (ID -> Nom (Ligne)) :");
+            foreach (var pair in builder.NoeudParId.OrderBy(p => p.Key).Take(5))
             {
-                Console.WriteLine($"ID {pair.Key} → {pair.Value.Valeur.Nom} (Ligne {pair.Value.Valeur.Ligne})");
+                Console.WriteLine($"ID {pair.Key} -> {pair.Value.Valeur.Nom} (Ligne {pair.Value.Valeur.Ligne})");
             }
 
-
-            Console.WriteLine("\n CALCUL D'ITINÉRAIRE ");
-
-            Console.Write("Entrez l'ID de la station de départ : ");
-            int idDepart = int.Parse(Console.ReadLine()!);
-
-            Console.Write("Entrez l'ID de la station d'arrivée : ");
-            int idArrivee = int.Parse(Console.ReadLine()!);
-
-            if (!builder.NoeudParId.TryGetValue(idDepart, out var depart) || !builder.NoeudParId.TryGetValue(idArrivee, out var arrivee))
+            /// Demande des stations de départ et d'arrivée
+            Console.Write("\nEntrez l'ID de la station de départ : ");
+            if (!int.TryParse(Console.ReadLine(), out int idDepart) || !builder.NoeudParId.ContainsKey(idDepart))
             {
-                Console.WriteLine("\nID invalide. Station non trouvée.");
+                Console.WriteLine("ID de départ invalide.");
+                return;
+            }
+            Console.Write("Entrez l'ID de la station d'arrivée : ");
+            if (!int.TryParse(Console.ReadLine(), out int idArrivee) || !builder.NoeudParId.ContainsKey(idArrivee))
+            {
+                Console.WriteLine("ID d'arrivée invalide.");
                 return;
             }
 
-            Console.WriteLine("\nChoisissez l'algorithme :");
-            Console.WriteLine("1 - Dijkstra");
-            Console.WriteLine("2 - Bellman-Ford");
-            Console.WriteLine("3 - Floyd-Warshall");
-            Console.Write("Votre choix : ");
-            int choix = int.Parse(Console.ReadLine()!);
+            var noeudDepart = builder.NoeudParId[idDepart];
+            var noeudArrivee = builder.NoeudParId[idArrivee];
 
-            (double distance, System.Collections.Generic.List<Noeud<Station>> chemin) resultat = choix switch
-            {
-                1 => cheminAlgo.Dijkstra(depart, arrivee),
-                2 => cheminAlgo.BellmanFord(depart, arrivee),
-                3 => cheminAlgo.FloydWarshall(depart, arrivee),
-                _ => throw new Exception("Choix invalide")
-            };
+            Console.WriteLine($"\nCalcul du plus court chemin entre \"{noeudDepart.Valeur.Nom}\" et \"{noeudArrivee.Valeur.Nom}\"...");
 
-            Console.WriteLine($"\nTemps total estimé : {resultat.distance} minutes");
-            Console.WriteLine("\nItinéraire :");
-            foreach (var noeud in resultat.chemin)
+            /// Exécuter et chronométrer chaque algorithme
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Restart();
+            var (distDij, cheminDij) = chemins.Dijkstra(noeudDepart, noeudArrivee);
+            stopwatch.Stop();
+            long tempsDijkstra = stopwatch.ElapsedMilliseconds;
+
+            stopwatch.Restart();
+            var (distBell, cheminBell) = chemins.BellmanFord(noeudDepart, noeudArrivee);
+            stopwatch.Stop();
+            long tempsBellman = stopwatch.ElapsedMilliseconds;
+
+            stopwatch.Restart();
+            var (distFW, cheminFW) = chemins.FloydWarshall(noeudDepart, noeudArrivee);
+            stopwatch.Stop();
+            long tempsFloyd = stopwatch.ElapsedMilliseconds;
+
+            /// Affichage des temps d'exécution
+            Console.WriteLine("\n---- RÉSULTATS DES ALGORITHMES ----");
+            Console.WriteLine($"Dijkstra    -> Temps calcul: {tempsDijkstra} ms, Distance: {distDij} minutes");
+            Console.WriteLine($"Bellman-Ford-> Temps calcul: {tempsBellman} ms, Distance: {distBell} minutes");
+            Console.WriteLine($"Floyd-Warshall -> Temps calcul: {tempsFloyd} ms, Distance: {distFW} minutes");
+
+            /// Vérifier que tous les algos donnent la même distance (ce qui devrait être le cas)
+            if (distDij == distBell && distDij == distFW)
             {
-                Console.WriteLine($"- {noeud.Valeur.Nom} (Ligne {noeud.Valeur.Ligne})");
+                Console.WriteLine("Tous les algorithmes trouvent la même distance minimale.");
             }
-            ///methode comparaison algo tries
-            ComparerAlgorithmes(graphe, cheminAlgo, depart, arrivee);
-
-        }
-        static void ComparerAlgorithmes(Graphe<Station> graphe, Chemins<Station> cheminAlgo, Noeud<Station> depart, Noeud<Station> arrivee)
-        {
-            Console.WriteLine("\n==== COMPARAISON DES ALGORITHMES ====");
-            Console.WriteLine($"Départ : {depart.Valeur.Nom} (Ligne {depart.Valeur.Ligne})");
-            Console.WriteLine($"Arrivée : {arrivee.Valeur.Nom} (Ligne {arrivee.Valeur.Ligne})\n");
-
-            (double temps, long duree, string nom, System.Collections.Generic.List<Noeud<Station>> chemin) Run(Func<(double, System.Collections.Generic.List<Noeud<Station>>)> algo, string nom)
+            else
             {
-                var sw = Stopwatch.StartNew();
-                var (dist, chemin) = algo();
-                sw.Stop();
-                return (dist, sw.ElapsedMilliseconds, nom, chemin);
-            }
-
-            var r1 = Run(() => cheminAlgo.Dijkstra(depart, arrivee), "Dijkstra");
-            var r2 = Run(() => cheminAlgo.BellmanFord(depart, arrivee), "Bellman-Ford");
-            var r3 = Run(() => cheminAlgo.FloydWarshall(depart, arrivee), "Floyd-Warshall");
-
-            foreach (var res in new[] { r1, r2, r3 })
-            {
-                Console.WriteLine($"[{res.nom}]\n Temps : {res.temps} min\n Durée d'exécution : {res.duree} ms\n");
+                Console.WriteLine("Les algorithmes n'ont pas trouvé la même distance  vérifiez les données ou implémentations ");
             }
 
-            bool memeDistance = Math.Abs(r1.temps - r2.temps) < 0.001 && Math.Abs(r1.temps - r3.temps) < 0.001;
-            Console.WriteLine(memeDistance
-                ? " Tous les algorithmes donnent le même résultat."
-                : " Les résultats diffèrent entre les algorithmes.");
+            /// Identifier le plus rapide
+            long tempsMin = Math.Min(tempsDijkstra, Math.Min(tempsBellman, tempsFloyd));
+            string algoRapide;
+            List<Noeud<Station>> cheminRapide;
+            double distanceRapide;
+            if (tempsMin == tempsDijkstra)
+            {
+                algoRapide = "Dijkstra";
+                cheminRapide = cheminDij;
+                distanceRapide = distDij;
+            }
+            else if (tempsMin == tempsBellman)
+            {
+                algoRapide = "Bellman-Ford";
+                cheminRapide = cheminBell;
+                distanceRapide = distBell;
+            }
+            else
+            {
+                algoRapide = "Floyd-Warshall";
+                cheminRapide = cheminFW;
+                distanceRapide = distFW;
+            }
+
+            Console.WriteLine($"\n=> L'algorithme le plus rapide est {algoRapide} (temps = {tempsMin} ms).");
+            Console.WriteLine($"Distance du plus court chemin : {distanceRapide} minutes.");
+            Console.WriteLine("Chemin le plus court :");
+            foreach (var noeud in cheminRapide)
+            {
+                Console.WriteLine($" - {noeud.Valeur.Nom} (Ligne {noeud.Valeur.Ligne})");
+            }
         }
     }
 }

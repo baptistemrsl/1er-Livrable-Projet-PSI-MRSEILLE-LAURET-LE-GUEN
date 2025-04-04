@@ -52,7 +52,7 @@ namespace LIVRABLE_2_PSI
             int n = Noeuds.Count;
             MatriceAdjacence = new double[n, n];
 
-            // Initialisation avec +∞ sauf diagonale à 0
+            /// Initialisation avec +∞ sauf diagonale à 0
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < n; j++)
                     MatriceAdjacence[i, j] = (i == j) ? 0 : double.PositiveInfinity;

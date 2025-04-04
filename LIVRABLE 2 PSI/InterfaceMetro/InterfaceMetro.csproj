@@ -8,12 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="arcs.csv" />
     <None Remove="fondMetro.png" />
     <None Remove="ImageMetro.png" />
     <None Remove="MetroParis.xlsx" />
+    <None Remove="noeuds.csv" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="arcs.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="fondMetro.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -21,6 +26,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="MetroParis.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="noeuds.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

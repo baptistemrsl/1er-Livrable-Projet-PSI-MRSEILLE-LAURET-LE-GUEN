@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace InterfaceMetro
+namespace LIVRABLE_2_PSI
 {
-    internal static class Program
+    static class Program
     {
         /// <summary>
-        /// Point d'entrée principal de l'application.
+        /// Point d’entrée principal de l’application.
         /// </summary>
         [STAThread]
         static void Main()

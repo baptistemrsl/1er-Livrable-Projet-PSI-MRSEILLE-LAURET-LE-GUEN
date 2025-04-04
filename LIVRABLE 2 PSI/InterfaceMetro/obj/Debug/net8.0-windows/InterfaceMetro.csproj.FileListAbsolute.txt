@@ -1,5 +1,4 @@
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\InterfaceMetro.csproj.AssemblyReference.cache
-C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\InterfaceMetro.Form1.resources
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\InterfaceMetro.Properties.Resources.resources
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\InterfaceMetro.csproj.GenerateResource.cache
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\InterfaceMetro.GeneratedMSBuildEditorConfig.editorconfig
@@ -38,3 +37,6 @@ C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-wi
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\MetroParis.xlsx
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\fondMetro.png
 C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\ImageMetro.png
+C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\obj\Debug\net8.0-windows\LIVRABLE_2_PSI.Form1.resources
+C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\arcs.csv
+C:\Users\bapti\OneDrive\Bureau\LIVRABLE 2 PSI\InterfaceMetro\bin\Debug\net8.0-windows\noeuds.csv
